@@ -1,6 +1,16 @@
-var builder = WebApplication.CreateBuilder(args);
-var app = builder.Build();
+using NotificationBoard.Hubs;      
 
-app.MapGet("/", () => "Hello World!");
+var builder = WebApplication.CreateBuilder(args);  
+
+//PHASE 1: REGISTER SERVICES
+builder.Services.AddSignalR();                 
+
+var app = builder.Build();        
+
+//PHASE 2: CONFIGURE MIDDLEWARE PIPELINE
+app.UseDefaultFiles();               
+app.UseStaticFiles();       
+
+app.MapHub<NotificationHub>("/notificationHub");    
 
 app.Run();
