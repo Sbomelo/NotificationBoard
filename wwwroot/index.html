@@ -5,13 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Meridian Technologies — Live Notifications</title>
   <link rel="stylesheet" href="employeeStyle.css">
-  <!--
-    THE SIGNALR JAVASCRIPT CLIENT LIBRARY.
-    This CDN link loads the official Microsoft SignalR JavaScript client.
-    Version 8.0.0 matches our server's ASP.NET Core 8.0 version.
-    In production, you would typically bundle this with npm/webpack,
-    but for this tutorial the CDN link is the simplest approach.
-  -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
 
   <style>
@@ -134,67 +127,65 @@
 
 <script> 
 
-// ═══════════════════════════════════════════════════════════════════
 // EMPLOYEE DASHBOARD — SignalR Client Logic
-// ═══════════════════════════════════════════════════════════════════
 
 // Track how many users are currently connected (estimated client-side count)
-let connectedCount = 0;                                          // Line JS-1
+let connectedCount = 0;                                
 
-// ═══════ STEP A: BUILD THE HUB CONNECTION ═══════════════════════
+// STEP A: BUILD THE HUB CONNECTION
 
-const connection = new signalR.HubConnectionBuilder()            // Line JS-2
-    .withUrl("/notificationHub")                                // Line JS-3
-    .withAutomaticReconnect()                                      // Line JS-4
-    .configureLogging(signalR.LogLevel.Information)              // Line JS-5
-    .build();                                                      // Line JS-6
+const connection = new signalR.HubConnectionBuilder()  
+    .withUrl("/notificationHub")                         
+    .withAutomaticReconnect()                                  
+    .configureLogging(signalR.LogLevel.Information)         
+    .build();                                               
 
-// ═══════ STEP B: REGISTER ALL HANDLERS BEFORE start() ═══════════
+// STEP B: REGISTER ALL HANDLERS BEFORE start() 
 // CRITICAL: Always register handlers before calling connection.start().
 // Any message that arrives during the window between start() resolving
 // and a handler being registered will be silently lost.
 // Register first. Start second. No exceptions.
 
 // Handler: Server confirms our connection and tells us our connection ID
-connection.on("WelcomeMessage", function(connectionId, serverTime) { // Line JS-7
-    document.getElementById("my-id").textContent = connectionId;          // Line JS-8
-    connectedCount++;                                                 // Line JS-9
-    refreshCount();                                                    // Line JS-10
-    const localTime = new Date(serverTime).toLocaleTimeString();         // Line JS-11
-    addSysMsg(`✓ Connected to Meridian Live Feed at ${localTime}`);     // Line JS-12
+connection.on("WelcomeMessage", function(connectionId, serverTime) { 
+    document.getElementById("my-id").textContent = connectionId;      
+    connectedCount++;                                        
+    refreshCount();                                             
+    const localTime = new Date(serverTime).toLocaleTimeString();   
+    addSysMsg(`✓ Connected to Meridian Live Feed at ${localTime}`);  
 });
 
 // Handler: Another user connected — increment our displayed count
-connection.on("UserConnected", function(connectionId) {                // Line JS-13
+connection.on("UserConnected", function(connectionId) {     
     connectedCount++;
     refreshCount();
 });
 
 // Handler: A user disconnected — decrement count (never below 0)
-connection.on("UserDisconnected", function(connectionId) {             // Line JS-14
-    connectedCount = Math.max(0, connectedCount - 1);                    // Line JS-15
+connection.on("UserDisconnected", function(connectionId) {      
+    connectedCount = Math.max(0, connectedCount - 1);              
     refreshCount();
 });
 
 // Handler: An admin broadcast a notification — this is the main event!
-connection.on("ReceiveNotification", function(notification) {         // Line JS-16
-    removeEmptyState();                                                 // Line JS-17
-    const card = buildCard(notification);                              // Line JS-18
+connection.on("ReceiveNotification", function(notification) {   
+    removeEmptyState();                                     
+    const card = buildCard(notification);                        
     const feed = document.getElementById("feed");
-    feed.insertBefore(card, feed.firstChild);                          // Line JS-19
+    feed.insertBefore(card, feed.firstChild);                
 
-    if (notification.priority.toLowerCase() === "critical") {          // Line JS-20
+    if (notification.priority.toLowerCase() === "critical") {  
         flashTitle("🚨 URGENT: " + notification.title);
     }
 });
 
 // Reconnection lifecycle — update UI to show reconnecting state
-connection.onreconnecting(function(error) {                           // Line JS-21
+connection.onreconnecting(function(error) {          
     setStatus("Reconnecting...", false);
 });
 
 // Reconnection succeeded — restore UI and log the event
-connection.onreconnected(function(newConnectionId) {                  // Line JS-22
+connection.onreconnected(function(newConnectionId) {        
     setStatus("Connected", true);
     addSysMsg("Reconnected after network interruption.");
     // IMPORTANT: newConnectionId is different from the original!
@@ -203,43 +194,43 @@ connection.onreconnected(function(newConnectionId) {                  // Line JS
 });
 
 // Connection permanently closed (after exhausting reconnect retries)
-connection.onclose(function(error) {                                  // Line JS-23
+connection.onclose(function(error) {                        
     setStatus("Disconnected", false);
     addSysMsg("Connection closed. Refresh the page to reconnect.");
 });
 
-// ═══════ STEP C: START THE CONNECTION ════════════════════════════
+//STEP C: START THE CONNECTION
 
-async function startConnection() {                                   // Line JS-24
+async function startConnection() {                             
     try {
-        await connection.start();                                       // Line JS-25
+        await connection.start();            
         setStatus("Connected", true);
     } catch (err) {
-        console.error("SignalR connection error:", err);                  // Line JS-26
+        console.error("SignalR connection error:", err);              
         setStatus("Connection Failed — Retrying in 5s", false);
-        setTimeout(startConnection, 5000);                              // Line JS-27
+        setTimeout(startConnection, 5000);                      
     }
 }
 
-startConnection();                                                      // Line JS-28
+startConnection();                                    
 
-// ═══════ STEP D: HELPER FUNCTIONS ════════════════════════════════
+//STEP D: HELPER FUNCTIONS 
 
-function setStatus(text, isLive) {                                    // Line JS-29
+function setStatus(text, isLive) {                              
     document.getElementById("conn-text").textContent = text;
     document.getElementById("dot").classList.toggle("live", isLive);
 }
 
-function refreshCount() {                                              // Line JS-30
+function refreshCount() {                                     
     document.getElementById("count").textContent = connectedCount;
 }
 
-function removeEmptyState() {                                          // Line JS-31
+function removeEmptyState() {                     
     const el = document.getElementById("empty");
     if (el) el.remove();
 }
 
-function addSysMsg(text) {                                             // Line JS-32
+function addSysMsg(text) {                                   
     const feed = document.getElementById("feed");
     const el = document.createElement("div");
     el.className = "sys-msg";
@@ -249,7 +240,7 @@ function addSysMsg(text) {                                             // Line J
     if (emptyState) emptyState.remove();
 }
 
-function buildCard(notification) {                                     // Line JS-33
+function buildCard(notification) {                  
     const p = (notification.priority || "info").toLowerCase();
     const t = new Date(notification.timestamp).toLocaleTimeString();
     const card = document.createElement("div");
@@ -267,14 +258,14 @@ function buildCard(notification) {                                     // Line J
     return card;
 }
 
-function esc(text) {                                                  // Line JS-34
+function esc(text) {                         
     const d = document.createElement("div");
     d.appendChild(document.createTextNode(text));
     return d.innerHTML;
 }
 
 let _flashTimer;
-function flashTitle(alertText) {                                        // Line JS-35
+function flashTitle(alertText) {                
     const orig = document.title;
     let toggle = false;
     clearInterval(_flashTimer);
