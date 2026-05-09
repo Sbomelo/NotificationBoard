@@ -45,4 +45,7 @@ If the employee tab is not active, watch for the tab title to flash.
 Open a third browser window also at http://localhost:5000. 
 The count should go up to 3. Close it — the count should drop back to 2
 
-![image alt](https://github.com/Sbomelo/NotificationBoard/blob/master/Screenshot%20(41).png?raw=true)
+![ScreenShot with one user connected](https://github.com/Sbomelo/NotificationBoard/blob/master/Screenshot%20(41).png?raw=true)
+![Screenshot with 2 users connected, admin connected](https://github.com/Sbomelo/NotificationBoard/blob/master/Screenshot%20(42).png?raw=true)
+![Screenshot with 3 users connected admin plus 2 employess](https://github.com/Sbomelo/NotificationBoard/blob/master/Screenshot%20(43).png?raw=true)
+![Screenshot with 4 users connected plus a notification from an admin](https://github.com/Sbomelo/NotificationBoard/blob/master/Screenshot%20(44).png?raw=true)
