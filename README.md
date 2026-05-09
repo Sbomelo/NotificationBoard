@@ -16,6 +16,10 @@ No refresh. No polling. Instant.
 But this is just a simple SignalR project i developed for learning and understanding how the SignalR library works.
 A simple starter project nothing complicated
 
+Employess are notified with their connetion id, and a green dot at the top to show they are connected, and red do when disconnected.
+They can also see the count number of connected users, and be notified when someone disconnects.
+The count decreases when someone disconnects.
+
 HOW TO TEST?
 Clone and run the project
 
@@ -40,3 +44,5 @@ Notice the admin dashboard also receives the notification (because Clients.All i
 If the employee tab is not active, watch for the tab title to flash.
 Open a third browser window also at http://localhost:5000. 
 The count should go up to 3. Close it — the count should drop back to 2
+
+![image alt](https://github.com/Sbomelo/NotificationBoard/blob/master/Screenshot%20(41).png?raw=true)
