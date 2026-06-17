@@ -1,3 +1,5 @@
+Part 1 - learning signalR by building projects of different complexity from easy to advanced projects.
+Difficulty- Easy or introductory Project
 REAL-TIME NOTIFICATION BOARD
 
 THE PROBLEM
