@@ -4,6 +4,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 //PHASE 1: REGISTER SERVICES
 builder.Services.AddSignalR();                 
+builder.Services.AddSingleton<ConnectionTracker>();
 
 var app = builder.Build();        
 
